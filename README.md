@@ -3,8 +3,12 @@ Indigo SNS Client
 
 Description
 ---
-The goal of this plugin is to be able to map device templates to simple JSON or RDF objects.  It's a plugin for DIY folks in Home Automation, a useful tool and framework if you subscribe to my theory about message passing and home automation (more on that below).
+A plugin for Perceptive Automation's Indigo Home Automation Service (http://www.perceptiveautomation.com/indigo/index.html).  The plugin creates and manages virtual devices based on JSON and RDF objects that are recieved from Amazon's Simple Notification Service (SNS).
 
+This plugin can be used out of the box, or as a development framework for bigger and better things.  See below for some potential uses.
+
+Example Usage
+---
 Here's an example of how the plugin can be useful: Say you could want Indigo to know a bit of data about your phone being on the network, and you have a message that is published from your DHCP server or using a network scanner like Fing (https://github.com/mlamoure/Fing-Device-Watch), and a message is published like so:
 
 {
@@ -26,7 +30,7 @@ With this plugin, you could create a virtual device using the device templates I
     "locationChanged": true
 }
 
-Potential Uses and Theory
+Theory
 ---
 One of the issues we see is that the home automation devices produce mesh networks that multiple subscribers can listen to.  This allows for infinite options where devices can speak to each other, but can also be centralized at a point like Indigo or your home automation hub of choice.  Often mesh networks are used in event-based architecture, where a message is sent when something of interest happens: e.g., a motion sensor is triggered.
 
