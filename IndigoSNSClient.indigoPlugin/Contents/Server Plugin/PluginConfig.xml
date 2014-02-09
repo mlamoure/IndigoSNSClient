@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<PluginConfig>
+	<SupportURL>
+		http://github.com/mlamoure
+	</SupportURL>
+
+<Field id="awsAccessKeyID" type="textfield" defaultValue="">
+    <Label>Amazon AWS Access Key Id:</Label>
+</Field>
+<Field id="awsSecretAccessKey" type="textfield" defaultValue="">
+    <Label>Amazon AWS Secret Access Key:</Label>
+</Field>
+<Field id="serverPrivatePort" type="textfield" defaultValue="60150">
+    <Label>Local port for HTTP Server:</Label>
+</Field>
+<Field id="publicIP" tooltip="The plugin will attempt to autodetect if blank.  However, it is best to specify using dyndns or static IP" type="textfield" defaultValue="">
+    <Label>Public IP or Hostname (or leave blank):</Label>
+</Field>
+<Field type="checkbox" id="useNATPMP" defaultValue="true">
+	<Label>Use NAT-PMP:</Label>
+	<Description>for port forwarding?</Description>
+</Field>
+<Field id="serverPublicPort" enabledBindingId="useNATPMP" tooltip="Plugin will attempt to use this port first, and then attempt other port numbers near this port if not sucessful using NAT-PMP." type="textfield" defaultValue="60150">
+    <Label>Public port (or leave blank):</Label>
+</Field>
+<Field id="gatewayIP" enabledBindingId="useNATPMP" tooltip="leave blank to try to autodetect, doesn't always work!" type="textfield" defaultValue="192.168.1.1">
+    <Label>Gateway IP Address(or leave blank):</Label>
+</Field>
+<Field type="checkbox" id="debug" defaultValue="false">
+	<Label>Show Debug Messages:</Label>
+</Field>
+</PluginConfig>

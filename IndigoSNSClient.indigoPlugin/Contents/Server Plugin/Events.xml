@@ -1,0 +1,39 @@
+<!-- Copyright (C)2011-2012 Perry The Cynic. -->
+<Events>
+    <Event id="recognized">
+        <Name>Recognized Input</Name>
+        <ConfigUI>
+			<Field id="device" type="menu"
+				tooltip="Network connection device">
+				<List class="self" method="DeviceFilter" filter="self.outgoing|self.incoming"/>
+				<Label>Connection:</Label>
+			</Field>
+            <Field id="pattern" type="textfield"
+            	tooltip="A regular expression to match.">
+                <Label>Pattern:</Label>
+            </Field>
+		<Field id="strict" type="checkbox" defaultValue="no">
+			<Label>Strict match:</Label>
+			<Description>Match only an exact input line.</Description>
+		</Field>
+		<Field type="separator"/>
+		<Field type="label">The last match for this event will be placed into a variable with this name. The variable will be created as needed.</Field>
+		<Field id="lastinput" type="textfield" defaultValue=""
+			tooltip="Put the last line read into this variable. Leave blank to disable.">
+			<Label>Last line matched:</Label>
+		</Field>
+        </ConfigUI>
+    </Event>
+
+    <Event id="unrecognized">
+        <Name>Unrecognized Input</Name>
+        <ConfigUI>
+			<Field id="device" type="menu"
+				tooltip="Network connection device">
+				<List class="self" method="DeviceFilter" filter="self.outgoing|self.incoming"/>
+				<Label>Connection:</Label>
+			</Field>
+        </ConfigUI>
+    </Event>
+
+</Events>
