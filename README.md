@@ -5,18 +5,18 @@ Description
 ---
 A plugin for Perceptive Automation's Indigo Home Automation Service (http://www.perceptiveautomation.com/indigo/index.html).  The plugin creates and manages virtual devices based on JSON and RDF objects that are recieved from Amazon's Simple Notification Service (SNS).
 
-This plugin can be used out of the box, or as a development framework for bigger and better things.  See below for some potential uses.
+This plugin can be used out of the box, or as a development framework for bigger and better things.  See below for some example usage.
 
 Example Usage
 ---
-Here's an example of how the plugin can be useful: Say you could want Indigo to know a bit of data about your phone being on the network, and you have a message that is published from your DHCP server or using a network scanner like Fing (https://github.com/mlamoure/Fing-Device-Watch), and a message is published like so:
+Say you could want Indigo to know a bit of data about your cellphone being on the network (for presence detection), and you have a message that is published from your DHCP server or using a network scanner like Fing (https://github.com/mlamoure/Fing-Device-Watch), and a message is published like so:
 
 {
 	"mac": "xx:xx:xx:xx:xx",
 	"state": "onNetwork"
 }
 
-With this plugin, you could create a virtual device using the device templates I've created, and map your custom fields to the device template.  The plugin would then listen for updates for the "topic" (called an event), and reflect those changes in Indigo.  Triggers and Actions are fully supported based on the device states for the virtual devices I've created.  Another example, I've built a replacement to the FindMyiDevices plugin that Ben wrote that publishes a message that looks like this:
+With this plugin, you could create a virtual device using the device templates I've created, and map your custom fields to the device template.  The plugin would then listen for updates for the "topic" (called an event), and reflect those changes in Indigo.  Triggers and Actions are fully supported based on the device states for the virtual devices I've created.  Another example, I've built a replacement to the existing Indigo FindMyiDevices plugin that Ben wrote (https://github.com/mlamoure/iCloudDeviceSNSPublisher.js) that publishes a message that looks like this:
 
 {
     "deviceID": "LONG LONG STRING",
@@ -30,7 +30,9 @@ With this plugin, you could create a virtual device using the device templates I
     "locationChanged": true
 }
 
-Theory
+The phone device template can take some of these fields (Battery Level, Battery Status, Longitude, Latitude), and let you create a virtual device in Indigo.  The fields for your JSON message might be slightly different than mine, which you can map your fields to the device template.
+
+Theory (the reason why I built this plugin)
 ---
 One of the issues we see is that the home automation devices produce mesh networks that multiple subscribers can listen to.  This allows for infinite options where devices can speak to each other, but can also be centralized at a point like Indigo or your home automation hub of choice.  Often mesh networks are used in event-based architecture, where a message is sent when something of interest happens: e.g., a motion sensor is triggered.
 
