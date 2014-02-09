@@ -3,7 +3,7 @@ Indigo SNS Client
 
 Description
 ---
-A plugin for Perceptive Automation's Indigo Home Automation Service (http://www.perceptiveautomation.com/indigo/index.html).  The plugin creates and manages virtual devices based on JSON and RDF objects that are recieved from Amazon's Simple Notification Service (SNS).
+A plugin for Perceptive Automation's Indigo Home Automation Service (http://www.perceptiveautomation.com).  The plugin creates and manages virtual devices based on JSON and RDF objects that are recieved from Amazon's Simple Notification Service (SNS).
 
 This plugin can be used out of the box, or as a development framework for bigger and better things.  See below for some example usage.
 
