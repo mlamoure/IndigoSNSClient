@@ -56,7 +56,9 @@ Some specifics about Amazon SNS, including some information about security that 
 
 Adding SNS Topics
 ---
-The plugin "learns" the attributes of a JSON publisher once you add the topic.  Best practice is to add the topic and force a publication from the publisher to test out that you are receiving the messages BEFORE adding devices.  When you do this, the plugin learns the fields that have been found in your messages.  This makes creating a device much simplier, as you can select the fields from drop down lists rather than typing them manually and risking a mistake.
+The plugin "learns" the attributes of a JSON publisher once you add the topic.  Best practice is to add the topic and force a publication from the publisher to test out that you are receiving the messages BEFORE adding devices.  When you do this, the plugin learns the fields that have been found in your messages.  This makes creating a device much simpler, as you can select the fields from drop down lists rather than typing them manually and risking a mistake.
+
+There is a checkbox option for SNS Topics to reset known properties (keys) upon the receipt of the next SNS Message (it's not immediate due to limitations of Indigo).  Use this if you have properties in your drop down that should not be published or used for a SNS Device.  This can e checked at any time, and once the next SNS message is received, the fields will be reset, and the flag will be unchecked.
 
 Adding SNS Devices
 ---
