@@ -30,12 +30,8 @@
 				</List>
 			</Field>
 
-			<Field id="btnResetFields" 
-					type="button" 
-					tooltip="Will reset the known fields for the topic.">
-				<Label></Label>
-				<Title>Reset Fields</Title>
-				<CallbackMethod>resetFields</CallbackMethod>
+			<Field type="checkbox" id="resetFields" defaultValue="false">
+				<Label>Reset saved fields upon next SNS message:</Label>
 			</Field>
 
 		</ConfigUI>

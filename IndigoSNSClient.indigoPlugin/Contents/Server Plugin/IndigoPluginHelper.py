@@ -61,13 +61,14 @@ class IndigoPluginHelper(object):
 
 		self.topicSubscriptions[topicArn] = ""
 
-	def resetTopicKeys(self, topic):
-		topicArn = topic.pluginProps["snsTopicArn"]
-		self.indigo.server.log("Resetting all known fields for topic " + topicArn)
-		self.replaceIndigoPluginProperty(topic, "knownKeys", None)
-
 	def mergeTopicKeys(self, topic, data):
 		topicArn = topic.pluginProps["snsTopicArn"]
+
+		if topic.pluginProps["resetFields"] == True:
+			self.indigo.server.log("Resetting all known fields for topic " + topicArn)
+			self.replaceIndigoPluginProperty(topic, "knownKeys", [])
+			self.replaceIndigoPluginProperty(topic, "resetFields", False)			
+
 		if not "knownKeys" in topic.pluginProps:
 			knownKeys = []
 		else:
@@ -169,7 +170,7 @@ class IndigoPluginHelper(object):
 		propsCopy = device.pluginProps
 
 		if replaceValue == None:
-			del propsCopy[replaceProperty]
+			propsCopy[replaceProperty] = None
 		else:
 			propsCopy.update({replaceProperty:replaceValue})
 

@@ -222,6 +222,14 @@ class Plugin(indigo.PluginBase):
 		
 		return
 
+	def didDeviceCommPropertyChange(self, origDev, newDev):
+		if origDev.deviceTypeId == "SNSTopic":
+			if origDev.pluginProps['snsTopicArn'] != newDev.pluginProps['snsTopicArn']:
+				return True
+			return False
+
+		return True
+
 # DEVICES.XML Methods
 
 	def getSNSTopicFields(self, valuesDict):
@@ -251,11 +259,6 @@ class Plugin(indigo.PluginBase):
 		return [("Please select a Topic above", "Please select a Topic above")]
 
 	def refreshFields(self, valuesDict, typeId, devId):
-		return valuesDict
-
-	def resetFields(self, valuesDict, typeId, devId):
-		if (devId != 0):
-			self.pluginHelper.resetTopicKeys(indigo.devices[devId])
 		return valuesDict
 
 	def getTopicFieldGenerator(self, filter="", valuesDict=None, typeId="", targetId=0):
