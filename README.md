@@ -87,10 +87,13 @@ Phone Devices:
     .states["batteryLevel"]: Double
     .states["nearestLocation"]: String
 
+Device Distance from Geo Location:
+    .state["distance"]: Double (in miles)
+
 
 ChangeLog
 ---
-    Version .3: Added a new state for the closest address of a Phone device.  See the plugin states.
+    Version .3: Added a new device type: Device Distance from Geo Location.  Added a new state for the closest address of a Phone device.  See the plugin states.
 
     Version .2: Added ability to reset the known attributes (keys) for a given topic
 

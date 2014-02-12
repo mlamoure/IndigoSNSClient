@@ -2,6 +2,7 @@ import sys
 import traceback
 import urllib2
 from xml.etree import ElementTree
+from math import sin, cos, sqrt, atan2, radians
 
 class IndigoPluginHelper(object):
 	debug = None
@@ -141,18 +142,20 @@ class IndigoPluginHelper(object):
 						batteryStatusField = device.pluginProps["deviceBatteryStatusOverrideField"]
 						batteryLevelField = device.pluginProps["deviceBatteryLevelOverrideField"]
 					
-					device.updateStateOnServer("longitude", value=deviceData[longitudeField], decimalPlaces=5)
-					device.updateStateOnServer("latitude", value=deviceData[latitudeField], decimalPlaces=5)
+					device.updateStateOnServer("longitude", value=deviceData[longitudeField], decimalPlaces=6)
+					device.updateStateOnServer("latitude", value=deviceData[latitudeField], decimalPlaces=6)
 
 					if deviceData[batteryStatusField].upper() != "UNKNOWN":
 						device.updateStateOnServer("batteryStatus", value=deviceData[batteryStatusField])
 						device.updateStateOnServer("batteryLevel", value=deviceData[batteryLevelField], decimalPlaces=2)
 
-					self.setNearestAddress(device)
-
 					self.indigo.server.log(device.name + "[longitude]: " + str(deviceData[longitudeField]))
 					self.indigo.server.log(device.name + "[latitude]: " + str(deviceData[latitudeField]))
 					self.indigo.server.log(device.name + "[nearest address]: " + str(device.states["nearestLocation"]))
+
+					self.setNearestAddress(device)
+					self.setDistanceFromKnownLocations(device)
+
 					self.indigo.server.log(device.name + "[battery status]: " + deviceData[batteryStatusField])
 					self.indigo.server.log(device.name + "[battery level]: " + str(deviceData[batteryLevelField]))
 
@@ -170,6 +173,25 @@ class IndigoPluginHelper(object):
 		if not matchFound:
 			if self.debug: 
 				self.indigo.server.log("A match was not found for a SNS message to a Indigo SNS Device")
+
+	def setDistanceFromKnownLocations(self, device):
+		for location in self.getAllDeviceLocations(device):
+			R = 6373.0
+
+			lat1 = radians(float(device.states["latitude"]))
+			lon1 = radians(float(device.states["longitude"]))
+			lat2 = radians(float(location.pluginProps["latitude"]))
+			lon2 = radians(float(location.pluginProps["longitude"]))
+
+			dlon = lon2 - lon1
+			dlat = lat2 - lat1
+			a = (sin(dlat/2))**2 + cos(lat1) * cos(lat2) * (sin(dlon/2))**2
+			c = 2 * atan2(sqrt(a), sqrt(1-a))
+			distance = R * c
+
+			self.indigo.server.log(location.name + "[distance]: " + str(round(distance, 3)) + " miles")
+			location.updateStateOnServer("distance", value=distance, decimalPlaces=3)
+
 
 	def setNearestAddress(self, device):
 		lat = device.states["latitude"]
@@ -242,6 +264,15 @@ class IndigoPluginHelper(object):
 		for indigoDevice in self.indigo.devices.iter("self"):
 			if indigoDevice.deviceTypeId != "SNSTopic" and indigoDevice.id != 0 and "snsTopic" in indigoDevice.pluginProps:
 				if int(indigoDevice.pluginProps["snsTopic"]) == topic.id:
+					toReturn.append(indigoDevice)
+
+		return toReturn
+
+	def getAllDeviceLocations(self, device):
+		toReturn = []
+		for indigoDevice in self.indigo.devices.iter("self.location"):
+			if indigoDevice.deviceTypeId == "location":
+				if int(indigoDevice.pluginProps["snsDevice"]) == device.id:
 					toReturn.append(indigoDevice)
 
 		return toReturn

@@ -236,130 +236,32 @@ Press this redresh button once you have selected your SNS Topic above, and again
 		</ConfigUI>
 	</Device>
 
-<!-- Archive
-	<Device type="custom" id="SNSDevice">
-		<Name>Amazon SNS Device</Name>
+	<Device type="custom" id="location">
+		<Name>Device Distance from Geo Location</Name>
 		<States>
+			<State id="distance">
+				<ValueType>Number</ValueType>
+				<TriggerLabel>Device Distance</TriggerLabel>
+				<ControlPageLabel>Device Distance</ControlPageLabel>
+			</State>
 		</States>
-		<UiDisplayStateId>state</UiDisplayStateId>
+		<UiDisplayStateId>distance</UiDisplayStateId>
 		<ConfigUI>
-
-			<Field id="snsTopic" type="menu">
-				<Label>SNS Topic:</Label>
-				<List class="indigo.devices" filter="self.SNSTopic" />
+			<Field id="snsDevice" type="menu">
+				<Label>Device:</Label>
+				<List class="indigo.devices" filter="self.PhoneSNSDevice" />
 			</Field>
 
-			<Field type="menu" id="deviceType" defaultValue="OnOff">
-				<Label>Device Type:</Label>
-				<List>
-					<Option value="OnOff">On / Off Device</Option>
-					<Option value="Location">GeoLocation Device</Option>
-					<Option value="Phone">Phone Device (lat, lon, battery, battery status)</Option>
-					<Option value="NumericValue">Single Numeric Value Device (dimmer-like)</Option>
-				</List>
+			<Field id="longitude" type="textfield" defaultValue="">
+				<Label>Longitude:</Label>
 			</Field>
 
-			<Field id="fieldInstructionsLabel2" type="label">
-				<Label>
-For detailed instructions, please go here: 
-
-Press this redresh button once you have selected your SNS Topic above, and again anytime to refresh the field lists with the most recent fields that the plugin has learned.
-				</Label>
-			</Field>
-
-			<Field id="btnRefreshFields" 
-					type="button" 
-					tooltip="Will refresh the drop down boxes with fields that the SNS Client learns of.  Try forcing a message publication from your source.  Check your config if you do not see messages arriving in the event log.">
-				<Label></Label>
-				<Title>Refresh Fields</Title>
-				<CallbackMethod>refreshFields</CallbackMethod>
-			</Field>
-
-			<Field type="checkbox" id="eventAsID" defaultValue="false">
-				<Label>No identifier needed (the event itself is the ID):</Label>
-			</Field>
-
-			<Field type="menu" id="deviceIDField" visibleBindingId="eventAsID" visibleBindingValue="false" enabledBindingId="deviceIDFieldOverride" enabledBindingNegate="true" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing device identifier:</Label>
-				<List class="self" filter="deviceIDField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="checkbox" id="deviceIDFieldOverride" visibleBindingId="eventAsID" visibleBindingValue="false" defaultValue="false">
-				<Label>Specify Manually / Override ID Field:</Label>
-			</Field>
-
-			<Field id="deviceIDOverrideField" visibleBindingId="deviceIDFieldOverride" visibleBindingValue="true" enabledBindingId="deviceIDFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="id">
-				<Label>ID field:</Label>
-			</Field>
-
-			<Field id="deviceIDValue" visibleBindingId="eventAsID" visibleBindingValue="false" enabledBindingId="eventAsID" enabledBindingNegate="true" tooltip="Type the value of the ID for the device you want to create" type="textfield" defaultValue="22:22:22:22:22">
-				<Label>ID for the device (the value for the field selected / entered above):</Label>
-			</Field>
-
-			<Field type="menu" visibleBindingId="deviceType" visibleBindingValue="OnOff,NumericValue" enabledBindingId="deviceStateFieldOverride" enabledBindingNegate="true" id="deviceStateField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing device state/value:</Label>
-				<List class="self" filter="deviceStateField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="checkbox" visibleBindingId="deviceType" visibleBindingValue="OnOff,NumericValue" id="deviceStateFieldOverride" defaultValue="false">
-				<Label>Specify Manually / Override State Field:</Label>
-			</Field>
-
-			<Field id="deviceStateOverrideField" visibleBindingId="deviceStateFieldOverride" visibleBindingValue="true" enabledBindingId="deviceStateFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="state">
-				<Label>Device State field:</Label>
-			</Field>
-
-			<Field id="deviceStateOnValue" visibleBindingId="deviceType" visibleBindingValue="OnOff" tooltip="Type the value that comes in for the field/key of the Device State when the device is ON.  Seperate by commas if there are multiple values." type="textfield" defaultValue="on">
-				<Label>Device "On" State Value:</Label>
-			</Field>
-
-			<Field id="deviceStateOffValue" visibleBindingId="deviceType" visibleBindingValue="OnOff" tooltip="Type the value that comes in for the field/key of the Device State when the device is OFF.  Seperate by commas if there are multiple values." type="textfield" defaultValue="off">
-				<Label>Device "Off" State Value:</Label>
-			</Field>
-
-			<Field type="menu" visibleBindingId="deviceType" visibleBindingValue="Location,Phone" enabledBindingId="deviceLocationFieldOverride" enabledBindingNegate="true" id="deviceLonField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing longitude:</Label>
-				<List class="self" filter="deviceLonField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="menu" visibleBindingId="deviceType" visibleBindingValue="Location,Phone" enabledBindingId="deviceLocationFieldOverride" enabledBindingNegate="true" id="deviceLatField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing latitude:</Label>
-				<List class="self" filter="deviceLatField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="menu" visibleBindingId="deviceType" visibleBindingValue="Phone" enabledBindingId="deviceLocationFieldOverride" enabledBindingNegate="true" id="deviceBatteryStatusField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing battery status:</Label>
-				<List class="self" filter="deviceBatteryStatusField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="menu" visibleBindingId="deviceType" visibleBindingValue="Phone" enabledBindingId="deviceLocationFieldOverride" enabledBindingNegate="true" id="deviceBatteryLevelField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
-				<Label>Field containing battery level:</Label>
-				<List class="self" filter="deviceBatteryLevelField" method="getTopicFieldGenerator" dynamicReload="true" />
-			</Field>
-
-			<Field type="checkbox" visibleBindingId="deviceType" visibleBindingValue="Location,Phone" id="deviceLocationFieldOverride" defaultValue="false">
-				<Label>Specify Manually / Override Location Fields:</Label>
-			</Field>
-
-			<Field id="deviceLonOverrideField" visibleBindingId="deviceType" visibleBindingValue="Location,Phone" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="longitude">
-				<Label>Device Longitude field:</Label>
-			</Field>
-
-			<Field id="deviceLatOverrideField" visibleBindingId="deviceType" visibleBindingValue="Location,Phone" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="latitude">
-				<Label>Device Latitude field:</Label>
-			</Field>
-
-			<Field id="deviceBatteryStatusOverrideField" visibleBindingId="deviceType" visibleBindingValue="Phone" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="batteryStatus">
-				<Label>Device Battery Status field:</Label>
-			</Field>
-
-			<Field id="deviceBatteryLevelOverrideField" visibleBindingId="deviceType" visibleBindingValue="Phone" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="batteryLevel">
-				<Label>Device Battery Level field:</Label>
+			<Field id="latitude" type="textfield" defaultValue="">
+				<Label>Latitude:</Label>
 			</Field>
 
 		</ConfigUI>
-	</Device> -->
-
+	</Device>
 
 
 </Devices>

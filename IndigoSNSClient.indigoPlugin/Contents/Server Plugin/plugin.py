@@ -202,6 +202,12 @@ class Plugin(indigo.PluginBase):
 					indigo.server.log("Already subscribed to topic: " + topicArn + " not going to do anything more.")
 			else:
 				self.subscribeToTopic(dev)
+		
+		elif dev.deviceTypeId == "location":
+			dev.updateStateOnServer("distance", value=0)
+
+		elif dev.deviceTypeId == "SNSDevice":
+			dev.updateStateOnServer("nearestLocation", value="Unknown")
 		return
 
 	def deviceStopComm(self, dev):
@@ -220,6 +226,11 @@ class Plugin(indigo.PluginBase):
 				if self.pluginHelper.debug: 
 					indigo.server.log("Not subscribed to topic: " + topicArn + " not going to do anything more.")
 		
+		elif dev.deviceTypeId == "SNSDevice":
+			dev.updateStateOnServer("nearestLocation", value="Unknown")
+		
+		elif dev.deviceTypeId == "location":
+			dev.updateStateOnServer("distance", value=0)
 		return
 
 	def didDeviceCommPropertyChange(self, origDev, newDev):
@@ -228,7 +239,7 @@ class Plugin(indigo.PluginBase):
 				return True
 			return False
 
-		return True
+		return False
 
 # DEVICES.XML Methods
 
