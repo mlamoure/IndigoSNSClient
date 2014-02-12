@@ -137,9 +137,14 @@ Press this redresh button once you have selected your SNS Topic above, and again
 				<TriggerLabel>Battery Level</TriggerLabel>
 				<ControlPageLabel>Battery Level</ControlPageLabel>
 			</State>
+			<State id="nearestLocation">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Nearest Location</TriggerLabel>
+				<ControlPageLabel>Nearest Location</ControlPageLabel>
+			</State>
 		</States>
 
-		<UiDisplayStateId>batteryLevel</UiDisplayStateId>
+		<UiDisplayStateId>nearestLocation</UiDisplayStateId>
 		<ConfigUI>
 
 			<Field id="snsTopic" type="menu">

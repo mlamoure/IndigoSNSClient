@@ -1,5 +1,7 @@
 import sys
 import traceback
+import urllib2
+from xml.etree import ElementTree
 
 class IndigoPluginHelper(object):
 	debug = None
@@ -146,8 +148,11 @@ class IndigoPluginHelper(object):
 						device.updateStateOnServer("batteryStatus", value=deviceData[batteryStatusField])
 						device.updateStateOnServer("batteryLevel", value=deviceData[batteryLevelField], decimalPlaces=2)
 
+					self.setNearestAddress(device)
+
 					self.indigo.server.log(device.name + "[longitude]: " + str(deviceData[longitudeField]))
 					self.indigo.server.log(device.name + "[latitude]: " + str(deviceData[latitudeField]))
+					self.indigo.server.log(device.name + "[nearest address]: " + str(device.states["nearestLocation"]))
 					self.indigo.server.log(device.name + "[battery status]: " + deviceData[batteryStatusField])
 					self.indigo.server.log(device.name + "[battery level]: " + str(deviceData[batteryLevelField]))
 
@@ -165,6 +170,36 @@ class IndigoPluginHelper(object):
 		if not matchFound:
 			if self.debug: 
 				self.indigo.server.log("A match was not found for a SNS message to a Indigo SNS Device")
+
+	def setNearestAddress(self, device):
+		lat = device.states["latitude"]
+		lon = device.states["longitude"]
+		newLocation = "unknown"
+		validResult = False
+		try:
+			url = "http://maps.google.com/maps/api/geocode/xml?latlng=" + str(lat) + "," + str(lon) + "&sensor=false"
+			
+			response = urllib2.urlopen(url)
+			the_page = response.read()
+
+			tree = ElementTree.fromstring(the_page)
+
+			if self.debug:
+				self.indigo.server.log("Raw response from Google API: " + the_page)
+
+			for child in tree.getiterator("status"):
+				if child.text == "OK":
+					validResult = True
+
+			if validResult:
+				for child in tree.getiterator("result"):
+					if child[0].text == "street_address":
+						newLocation = child[1].text
+						break
+
+			device.updateStateOnServer("nearestLocation", value=newLocation)
+		except:
+			device.updateStateOnServer("nearestLocation", value=newLocation)
 
 	def replaceIndigoPluginProperty(self, device, replaceProperty, replaceValue):
 		propsCopy = device.pluginProps

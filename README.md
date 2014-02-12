@@ -72,6 +72,31 @@ A note about identifiers: The plugin supports looking for the "ID" of a virtual 
 
 When creating a device, first make sure the plugin is configured properly and receiving messages.You will see messages being received in the console log, regardless of the debug status for the plugin.  Once you are in the add device screen, use the refresh button to repopulate the fields with any fields that have been learned.  You must select a topic before doing this.  As a last resort, specify the fields manually using the override options.  Note: When manually specifying fields, do not use quotes.  For JSON topics, do not use colons ":".  For RDF topics (not yet supported), use the FULL URI for the predicate, surrounded by angle brackets.  For both fields and values, I have tried to be good about ignoring case, but being consistent might still be a good practice.
 
+
+Plugin States
+---
+Useful for python scripting, the plugin contains the following states:
+
+On/Off Devices:
+    .states["state"]: List (On, Off)
+
+Phone Devices:
+    .states["longitude"]: Double
+    .states["latitude"]: Double
+    .states["batteryStatus"]: List (Charging, NotCharging, Unknown)
+    .states["batteryLevel"]: Double
+    .states["nearestLocation"]: String
+
+
+ChangeLog
+---
+    Version .3: Added a new state for the closest address of a Phone device.  See the plugin states.
+
+    Version .2: Added ability to reset the known attributes (keys) for a given topic
+
+    Version .1: Initial Release
+
+
 To-Do List
 ---
 1. Validation of the configuration fields is an issue, I'll improve it later.  For now, don't make mistakes when adding topics or devices.
