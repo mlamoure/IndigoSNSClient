@@ -22,7 +22,7 @@
 				<Label>Amazon SNS Topic Arn:</Label>
 			</Field>
 
-			<Field type="menu" id="simplePopUpButton" defaultValue="json">
+			<Field type="menu" id="messageFromat" defaultValue="json">
 				<Label>Message format:</Label>
 				<List>
 					<Option value="json">JSON</Option>
@@ -142,6 +142,12 @@ Press this redresh button once you have selected your SNS Topic above, and again
 				<TriggerLabel>Nearest Location</TriggerLabel>
 				<ControlPageLabel>Nearest Location</ControlPageLabel>
 			</State>
+			<State id="locationTimestamp">
+				<ValueType>String</ValueType>
+				<TriggerLabel>Location Timestamp</TriggerLabel>
+				<ControlPageLabel>Location Timestamp</ControlPageLabel>
+			</State>
+
 		</States>
 
 		<UiDisplayStateId>nearestLocation</UiDisplayStateId>
@@ -213,6 +219,11 @@ Press this redresh button once you have selected your SNS Topic above, and again
 				<List class="self" filter="deviceBatteryLevelField" method="getTopicFieldGenerator" dynamicReload="true" />
 			</Field>
 
+			<Field type="menu" enabledBindingId="deviceLocationFieldOverride" enabledBindingNegate="true" id="deviceLocationTimestampField" tooltip="If this is blank, you need to give the subscription more time to recieve some SNS messages.  Try forcing a message publication from your source, and press the button above to refresh the list.  Check your config if you do not see messages arriving in the event log.  This list will populate with the fields that are found from the Topic Subscription.">
+				<Label>Field containing location timetemp:</Label>
+				<List class="self" filter="deviceLocationTimestampField" method="getTopicFieldGenerator" dynamicReload="true" />
+			</Field>
+
 			<Field type="checkbox" id="deviceLocationFieldOverride" defaultValue="false">
 				<Label>Specify Manually / Override Location Fields:</Label>
 			</Field>
@@ -231,6 +242,10 @@ Press this redresh button once you have selected your SNS Topic above, and again
 
 			<Field id="deviceBatteryLevelOverrideField" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="batteryLevel">
 				<Label>Device Battery Level field:</Label>
+			</Field>
+
+			<Field id="deviceLocationTimestampOverrideField" enabledBindingId="deviceLocationFieldOverride" tooltip="Type the field key/attribute (if JSON) or the full URI predicate (if RDF)" type="textfield" defaultValue="LocationTimestamp">
+				<Label>Location Timestamp field:</Label>
 			</Field>
 
 		</ConfigUI>

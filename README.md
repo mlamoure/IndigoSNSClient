@@ -77,15 +77,16 @@ Plugin States
 ---
 Useful for python scripting, the plugin contains the following states:
 
-On/Off Devices:
-    .states["state"]: List (On, Off)
+On/Off Devices & Numeric Value Devices:
+    .states["state"]: List (On, Off, or Numeric)
 
-Phone Devices:
+Phone / GeoLocation Devices:
     .states["longitude"]: Double
     .states["latitude"]: Double
-    .states["batteryStatus"]: List (Charging, NotCharging, Unknown)
-    .states["batteryLevel"]: Double
-    .states["nearestLocation"]: String
+    .states["batteryStatus"]: List (Charging, NotCharging, Unknown) (Phone Only) 
+    .states["batteryLevel"]: Double (Phone Only) 
+    .states["nearestLocation"]: String.  This is looked up from Google's API's.
+    .states["locationTimestamp"]: String (Indigo does not support datetime state types.)  The format is: %Y-%m-%d %H:%M:%S
 
 Device Distance from Geo Location:
     .state["distance"]: Double (in miles)
@@ -93,7 +94,9 @@ Device Distance from Geo Location:
 
 ChangeLog
 ---
-    Version .3: Added a new device type: Device Distance from Geo Location.  Added a new state for the closest address of a Phone device.  See the plugin states.
+    Version .4: Added additional device types: Geo-Location Device.  Numeric Value Device.
+
+    Version .31: Added a new device type: Device Distance from Geo Location.  Added a new state for the closest address of a Phone device.  Added locationTimestamp state.  See the plugin states for more info.
 
     Version .2: Added ability to reset the known attributes (keys) for a given topic
 
@@ -102,16 +105,9 @@ ChangeLog
 
 To-Do List
 ---
-1. Validation of the configuration fields is an issue, I'll improve it later.  For now, don't make mistakes when adding topics or devices.
-
-2. Adding RDF as a supported message type
-
-3. Additional device types:
-	Geo-Location device without the phone properties
-	Numeric Device type (like a dimmer)
-
-4. Maybe - add support for geo-fencing
-
+-- Validation of the configuration fields is an issue, I'll improve it later.  For now, don't make mistakes when adding topics or devices.
+-- Add RDF as a supported message type
+-- Add additional typing options, such as the format for LocationTimestamp 
 
 
 

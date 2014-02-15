@@ -237,7 +237,10 @@ class Plugin(indigo.PluginBase):
 		if origDev.deviceTypeId == "SNSTopic":
 			if origDev.pluginProps['snsTopicArn'] != newDev.pluginProps['snsTopicArn']:
 				return True
-			return False
+
+		elif origDev.deviceTypeId == "location":
+			if origDev.pluginProps['latitude'] != newDev.pluginProps['latitude'] or origDev.pluginProps['longitude'] != newDev.pluginProps['longitude']:
+				return True
 
 		return False
 

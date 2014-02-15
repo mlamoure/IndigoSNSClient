@@ -3,6 +3,7 @@ import traceback
 import urllib2
 from xml.etree import ElementTree
 from math import sin, cos, sqrt, atan2, radians
+import time
 
 class IndigoPluginHelper(object):
 	debug = None
@@ -90,6 +91,7 @@ class IndigoPluginHelper(object):
 	def updateSNSDeviceState(self, topic, deviceData):
 		matchFound = False
 		topicArn = topic.pluginProps["snsTopicArn"]
+		messageTopicJSON = topic.pluginProps["messageFromat"] == "json"
 
 		for device in self.getAllSNSTopicDevices(topic):
 			# We only know what topic we are workig with, not the device, so we need to first discover that.
@@ -115,55 +117,72 @@ class IndigoPluginHelper(object):
 
 			# Now that we have the deviceID, or the device does not require a ID, we can proceed
 			if deviceIDField == None or deviceDataID == deviceID:
-				if device.deviceTypeId == "OnOffSNSDevice":
-					self.indigo.server.log("A SNS message was received for On/Off device: " + device.name + ", states have been updated")
-
+				if device.deviceTypeId == "OnOffSNSDevice" or device.deviceTypeId == "NumericValueSNSDevice":
 					if not device.pluginProps["deviceStateFieldOverride"]:
 						stateField = device.pluginProps["deviceStateField"]
 					else:
 						stateField = device.pluginProps["deviceStateOverrideField"]
 
-					onOffState = str(deviceData[stateField]).upper() == str(device.pluginProps["deviceStateOnValue"]).upper()
-					device.updateStateOnServer("state", value=onOffState)
+					if device.deviceTypeId == "OnOffSNSDevice":
+						newValue = str(deviceData[stateField]).upper() == str(device.pluginProps["deviceStateOnValue"]).upper()
+					elif device.deviceTypeId == "NumericValueSNSDevice":
+						newValue = deviceData[stateField]
 
-					self.indigo.server.log(device.name + "[state]: " + str(onOffState))
+					device.updateStateOnServer("state", value=newValue)
 
-				elif device.deviceTypeId == "LocationSNSDevice":
-					self.indigo.server.log("A SNS message was received for Location device: " + device.name + ", states have been updated")
-				elif device.deviceTypeId == "PhoneSNSDevice":
+					self.indigo.server.log(device.name + "[state]: " + str(newValue))
+
+				elif device.deviceTypeId == "PhoneSNSDevice" or device.deviceTypeId == "LocationSNSDevice":
 					if not device.pluginProps["deviceLocationFieldOverride"]:
 						longitudeField = device.pluginProps["deviceLonField"]
 						latitudeField = device.pluginProps["deviceLatField"]
-						batteryStatusField = device.pluginProps["deviceBatteryStatusField"]
-						batteryLevelField = device.pluginProps["deviceBatteryLevelField"]
+						locationTimestampField = device.pluginProps["deviceLocationTimestampField"]
+
+						if device.deviceTypeId == "PhoneSNSDevice":
+							batteryStatusField = device.pluginProps["deviceBatteryStatusField"]
+							batteryLevelField = device.pluginProps["deviceBatteryLevelField"]
 					else:
 						longitudeField = device.pluginProps["deviceLonOverrideField"]
 						latitudeField = device.pluginProps["deviceLatOverrideField"]
-						batteryStatusField = device.pluginProps["deviceBatteryStatusOverrideField"]
-						batteryLevelField = device.pluginProps["deviceBatteryLevelOverrideField"]
-					
+						locationTimestampField = device.pluginProps["deviceLocationTimestampOverrideField"]
+
+						if device.deviceTypeId == "PhoneSNSDevice":
+							batteryStatusField = device.pluginProps["deviceBatteryStatusOverrideField"]
+							batteryLevelField = device.pluginProps["deviceBatteryLevelOverrideField"]
+
+					if messageTopicJSON:
+						try:
+							locationTimestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(deviceData[locationTimestampField]) / 1000))
+						except Exception:
+							try:
+								locationTimestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(deviceData[locationTimestampField]))
+							except Exception:
+								locationTimestamp = "UNKNOWN"
+								self.indigo.server.log("Could not set the location timestamp for " + device.name + ".")
+
+					device.updateStateOnServer("locationTimestamp", value=str(locationTimestamp))
 					device.updateStateOnServer("longitude", value=deviceData[longitudeField], decimalPlaces=6)
 					device.updateStateOnServer("latitude", value=deviceData[latitudeField], decimalPlaces=6)
 
-					if deviceData[batteryStatusField].upper() != "UNKNOWN":
-						device.updateStateOnServer("batteryStatus", value=deviceData[batteryStatusField])
-						device.updateStateOnServer("batteryLevel", value=deviceData[batteryLevelField], decimalPlaces=2)
+					if device.deviceTypeId == "PhoneSNSDevice":
+						if deviceData[batteryStatusField].upper() != "UNKNOWN":
+							device.updateStateOnServer("batteryStatus", value=deviceData[batteryStatusField])
+							device.updateStateOnServer("batteryLevel", value=deviceData[batteryLevelField], decimalPlaces=2)
 
 					self.indigo.server.log(device.name + "[longitude]: " + str(deviceData[longitudeField]))
 					self.indigo.server.log(device.name + "[latitude]: " + str(deviceData[latitudeField]))
+					self.indigo.server.log(device.name + "[locationTimestamp]: " + str(locationTimestamp))
 					self.indigo.server.log(device.name + "[nearest address]: " + str(device.states["nearestLocation"]))
 
 					self.setNearestAddress(device)
 					self.setDistanceFromKnownLocations(device)
 
-					self.indigo.server.log(device.name + "[battery status]: " + deviceData[batteryStatusField])
-					self.indigo.server.log(device.name + "[battery level]: " + str(deviceData[batteryLevelField]))
+					if device.deviceTypeId == "PhoneSNSDevice":
+						self.indigo.server.log(device.name + "[battery status]: " + deviceData[batteryStatusField])
+						self.indigo.server.log(device.name + "[battery level]: " + str(deviceData[batteryLevelField]))
 
-					if deviceData[batteryStatusField].upper() == "UNKNOWN":
-						self.indigo.server.log(device.name + "[INFO]: Battery status and level ignored because they are unknown")
-
-				elif device.deviceTypeId == "NumericValueSNSDevice":
-					self.indigo.server.log("A SNS message was received for NumericValue device: " + device.name + ", states have been updated")
+						if deviceData[batteryStatusField].upper() == "UNKNOWN":
+							self.indigo.server.log(device.name + "[INFO]: Battery status and level ignored because they are unknown")
 
 				matchFound = True
 				break
